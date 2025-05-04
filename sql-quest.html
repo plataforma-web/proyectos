@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQL Quest - ¡Aprende Bases de Datos!</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Quicksand:wght@400;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        h1 {
+            font-family: 'Fredoka One', cursive;
+            color: #5c6bc0;
+            font-size: 2.5em;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            font-family: 'Fredoka One', cursive;
+            color: #5c6bc0;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 1.3em;
+            color: #666;
+            margin-bottom: 40px;
+        }
+
+        .info-box {
+            background: #f3f4ff;
+            border: 2px solid #5c6bc0;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .start-button {
+            background: #5c6bc0;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-size: 1.5em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 20px auto;
+            display: block;
+        }
+
+        .start-button:hover {
+            background: #4a5a9e;
+            transform: scale(1.05);
+        }
+
+        /* Tutorial */
+        .tutorial-screen {
+            display: none;
+        }
+
+        .tutorial-step {
+            background: #f8f9fa;
+            border: 2px solid #5c6bc0;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .step-number {
+            position: absolute;
+            top: -15px;
+            left: 20px;
+            background: #ff9800;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .level-preview {
+            background: #fff;
+            border: 2px solid #5c6bc0;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .level-preview-icon {
+            font-size: 1.5em;
+        }
+
+        .level-preview-content {
+            flex: 1;
+        }
+
+        .level-preview-title {
+            font-weight: bold;
+            color: #5c6bc0;
+            margin-bottom: 5px;
+        }
+
+        .level-preview-desc {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .code-preview {
+            background: #263238;
+            color: #fff;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .important-note {
+            background: #fff3e0;
+            border-left: 5px solid #ff9800;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        /* Juego */
+        .game-screen {
+            display: none;
+        }
+
+        .player-info {
+            background: #e8f5e9;
+            border: 2px solid #4caf50;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .player-name {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #4caf50;
+        }
+
+        .player-points {
+            font-size: 1.2em;
+            color: #333;
+            margin-top: 10px;
+        }
+
+        .level-card {
+            background: #fff;
+            border: 3px solid #5c6bc0;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .level-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .level-icon {
+            font-size: 2em;
+        }
+
+        .level-title {
+            font-size: 1.5em;
+            color: #5c6bc0;
+            font-weight: bold;
+        }
+
+        .code-example {
+            background: #263238;
+            color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: monospace;
+            font-size: 1.1em;
+        }
+
+        .options {
+            display: grid;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .option-button {
+            background: #e3f2fd;
+            border: 2px solid #5c6bc0;
+            border-radius: 10px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            font-size: 1.1em;
+        }
+
+        .option-button:hover {
+            background: #bbdefb;
+            transform: translateX(5px);
+        }
+
+        .option-button.correct {
+            background: #c8e6c9;
+            border-color: #4caf50;
+        }
+
+        .option-button.incorrect {
+            background: #ffcdd2;
+            border-color: #f44336;
+        }
+
+        .feedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: bold;
+            text-align: center;
+            display: none;
+        }
+
+        .feedback.correct {
+            background: #dcedc8;
+            color: #2e7d32;
+        }
+
+        .feedback.incorrect {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .next-button {
+            background: #4caf50;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .next-button:hover {
+            background: #43a047;
+        }
+
+        /* Pantalla final */
+        .end-screen {
+            display: none;
+        }
+
+        .trophy {
+            font-size: 5em;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .final-score {
+            font-size: 2em;
+            color: #4caf50;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .results-summary {
+            background: #f8f9fa;
+            border: 2px solid #5c6bc0;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 30px 0;
+        }
+
+        .sql-commands {
+            background: #263238;
+            color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+
+        .result-item {
+            background: #fff;
+            border-left: 5px solid #4caf50;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 0 5px 5px 0;
+        }
+
+        .certificate {
+            background: white;
+            border: 20px solid #f8f9fa;
+            border-radius: 15px;
+            padding: 40px;
+            margin: 30px 0;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        .certificate:before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            right: 15px;
+            bottom: 15px;
+            border: 2px solid #5c6bc0;
+            border-radius: 10px;
+        }
+
+        .certificate h2 {
+            color: #ff9800;
+            margin-bottom: 20px;
+            font-size: 2.5em;
+        }
+
+        .certificate-logo {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .student-name {
+            font-family: 'Fredoka One', cursive;
+            font-size: 2.2em;
+            color: #5c6bc0;
+            margin: 20px 0;
+        }
+
+        .skills-badges {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 30px 0;
+        }
+
+        .skill-badge {
+            background: #4caf50;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .certificate-footer {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+        }
+
+        .signature-block {
+            text-align: center;
+        }
+
+        .signature-line {
+            border-top: 2px solid #333;
+            width: 150px;
+            margin: 0 auto 10px;
+        }
+
+        .certificate-date {
+            margin-top: 20px;
+            color: #666;
+        }
+
+        .certificate-id {
+            font-size: 12px;
+            color: #999;
+            margin-top: 10px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .explanation-box {
+            background: #e8f5e9;
+            border: 2px dashed #4caf50;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+            font-style: italic;
+        }
+
+        .command-meaning {
+            background: #fffde7;
+            border-left: 4px solid #ffc107;
+            padding: 10px 15px;
+            margin: 10px 0;
+            border-radius: 0 5px 5px 0;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Pantalla de Bienvenida -->
+        <div id="welcomeScreen">
+            <h1>🎮 SQL Quest</h1>
+            <p class="subtitle">¡Aprende Bases de Datos desde Cero!</p>
+            
+            <div class="info-box">
+                <h2>🤔 ¿Qué es Oracle Database?</h2>
+                <p>Oracle es uno de los sistemas de bases de datos más utilizados en el mundo empresarial. Es como un almacén digital gigante y muy organizado donde las empresas guardan toda su información importante.</p>
+                <br>
+                <p><strong>¿Por qué aprender Oracle SQL?</strong></p>
+                <ul style="list-style: none; margin-top: 10px;">
+                    <li>🏢 Lo usan grandes empresas y bancos</li>
+                    <li>💼 Es muy solicitado en trabajos de tecnología</li>
+                    <li>🔒 Es muy seguro para datos importantes</li>
+                    <li>⚡ Puede manejar millones de datos rápidamente</li>
+                </ul>
+                <br>
+                <p><strong>¿Qué es SQL?</strong></p>
+                <p>SQL (Structured Query Language) significa "Lenguaje de Consulta Estructurado". Es el idioma que usamos para hablar con las bases de datos como Oracle. Con SQL podemos:</p>
+                <ul style="list-style: none; margin-top: 10px;">
+                    <li>✅ Crear tablas (como hojas en Excel)</li>
+                    <li>✅ Agregar información</li>
+                    <li>✅ Buscar datos específicos</li>
+                    <li>✅ Hacer cálculos y reportes</li>
+                </ul>
+            </div>
+            
+            <button class="start-button" onclick="showTutorial()">📚 Ver Tutorial</button>
+            <button class="start-button" onclick="startGame()" style="background: #4caf50;">🚀 Comenzar Juego</button>
+        </div>
+
+        <!-- Pantalla de Tutorial -->
+        <div id="tutorialScreen" class="tutorial-screen">
+            <h1>📚 ¿Cómo Jugar SQL Quest?</h1>
+            <p class="subtitle">¡Es muy fácil! Sigue estos pasos:</p>
+
+            <div class="tutorial-step">
+                <div class="step-number">1</div>
+                <h3>Lee la Explicación</h3>
+                <p>En cada nivel, te explicaremos un concepto nuevo de SQL de forma simple.</p>
+                <div class="info-box">
+                    <p><strong>Ejemplo:</strong> "CREATE TABLE es como crear una nueva hoja en Excel"</p>
+                </div>
+            </div>
+
+            <div class="tutorial-step">
+                <div class="step-number">2</div>
+                <h3>Observa el Código</h3>
+                <p>Verás un ejemplo de código SQL con un espacio en blanco (_____)</p>
+                <div class="code-preview">CREATE _____ personas (nombre VARCHAR, edad NUMBER);</div>
+                <p>Tu tarea es completar el espacio en blanco con la palabra correcta.</p>
+            </div>
+
+            <div class="tutorial-step">
+                <div class="step-number">3</div>
+                <h3>Elige la Respuesta</h3>
+                <p>Se te mostrarán 4 opciones. Haz clic en la respuesta correcta.</p>
+                <div class="options" style="pointer-events: none;">
+                    <button class="option-button">TABLE</button>
+                    <button class="option-button">MAKE</button>
+                    <button class="option-button">BUILD</button>
+                    <button class="option-button">NEW</button>
+                </div>
+            </div>
+
+            <div class="tutorial-step">
+                <div class="step-number">4</div>
+                <h3>Los 5 Niveles que Completarás</h3>
+                
+                <div class="level-preview">
+                    <div class="level-preview-icon">📝</div>
+                    <div class="level-preview-content">
+                        <div class="level-preview-title">Nivel 1: Tu Primera Tabla - CREATE TABLE</div>
+                        <div class="level-preview-desc">Aprenderás a crear tablas usando CREATE TABLE</div>
+                        <div class="code-preview">CREATE TABLE personas (nombre VARCHAR, edad NUMBER);</div>
+                        <div style="color: #ff9800; margin-top: 5px;">📚 Significado: CREATE TABLE = CREAR TABLA</div>
+                        <div style="color: #666; font-size: 0.9em;">Una TABLA es como una hoja de Excel donde organizamos datos en filas y columnas.</div>
+                    </div>
+                </div>
+
+                <div class="level-preview">
+                    <div class="level-preview-icon">➕</div>
+                    <div class="level-preview-content">
+                        <div class="level-preview-title">Nivel 2: Agregando Información - INSERT INTO</div>
+                        <div class="level-preview-desc">Aprenderás a insertar datos con INSERT INTO</div>
+                        <div class="code-preview">INSERT INTO personas VALUES ('Ana', 25);</div>
+                        <div style="color: #ff9800; margin-top: 5px;">📚 Significado: INSERT INTO = INSERTAR EN</div>
+                        <div style="color: #666; font-size: 0.9em;">Usamos INSERT INTO para agregar nuevos datos a nuestra tabla, como escribir en una nueva fila de Excel.</div>
+                    </div>
+                </div>
+
+                <div class="level-preview">
+                    <div class="level-preview-icon">👀</div>
+                    <div class="level-preview-content">
+                        <div class="level-preview-title">Nivel 3: Viendo los Datos - SELECT</div>
+                        <div class="level-preview-desc">Aprenderás a consultar datos con SELECT</div>
+                        <div class="code-preview">SELECT * FROM personas;</div>
+                        <div style="color: #ff9800; margin-top: 5px;">📚 Significado: SELECT * FROM = SELECCIONAR TODO DE</div>
+                        <div style="color: #666; font-size: 0.9em;">El asterisco (*) significa "todo". Es como pedir ver todas las columnas de la tabla.</div>
+                    </div>
+                </div>
+
+                <div class="level-preview">
+                    <div class="level-preview-icon">🔍</div>
+                    <div class="level-preview-content">
+                        <div class="level-preview-title">Nivel 4: Buscando Información - WHERE</div>
+                        <div class="level-preview-desc">Aprenderás a filtrar datos con WHERE</div>
+                        <div class="code-preview">SELECT * FROM personas WHERE edad > 18;</div>
+                        <div style="color: #ff9800; margin-top: 5px;">📚 Significado: WHERE = DONDE</div>
+                        <div style="color: #666; font-size: 0.9em;">WHERE nos permite buscar datos específicos, como usar filtros en Excel.</div>
+                    </div>
+                </div>
+
+                <div class="level-preview">
+                    <div class="level-preview-icon">📊</div>
+                    <div class="level-preview-content">
+                        <div class="level-preview-title">Nivel 5: Contando Registros - COUNT</div>
+                        <div class="level-preview-desc">Aprenderás a contar datos con COUNT</div>
+                        <div class="code-preview">SELECT COUNT(*) FROM personas;</div>
+                        <div style="color: #ff9800; margin-top: 5px;">📚 Significado: COUNT(*) = CONTAR TODO</div>
+                        <div style="color: #666; font-size: 0.9em;">COUNT cuenta cuántas filas hay en la tabla, como contar registros en Excel.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tutorial-step">
+                <div class="step-number">5</div>
+                <h3>📖 Vocabulario SQL Básico</h3>
+                <div class="info-box">
+                    <p><strong>Palabras clave que aprenderás:</strong></p>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li><strong>TABLE</strong> = TABLA (donde guardamos datos)</li>
+                        <li><strong>CREATE</strong> = CREAR (hacer algo nuevo)</li>
+                        <li><strong>INSERT</strong> = INSERTAR (agregar datos)</li>
+                        <li><strong>INTO</strong> = EN/DENTRO DE (indica destino)</li>
+                        <li><strong>SELECT</strong> = SELECCIONAR (elegir qué ver)</li>
+                        <li><strong>FROM</strong> = DE/DESDE (indica origen)</li>
+                        <li><strong>WHERE</strong> = DONDE (establece condiciones)</li>
+                        <li><strong>COUNT</strong> = CONTAR (cuenta registros)</li>
+                        <li><strong>*</strong> = TODO (asterisco = todas las columnas)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="important-note">
+                <h3>⚡ Puntos Importantes:</h3>
+                <ul>
+                    <li>✨ No hay límite de tiempo - tómate el tiempo que necesites</li>
+                    <li>🔄 Puedes intentar cuantas veces quieras si te equivocas</li>
+                    <li>⭐ Ganas puntos por cada respuesta correcta</li>
+                    <li>🏆 Al completar todos los niveles, recibes un certificado</li>
+                </ul>
+            </div>
+
+            <button class="start-button" onclick="startGame()">🎮 ¡Entendido! Comenzar Juego</button>
+        </div>
+
+        <!-- Pantalla del Juego -->
+        <div id="gameScreen" class="game-screen">
+            <h1>🎮 SQL Quest</h1>
+            
+            <div class="player-info">
+                <div class="player-name">Explorador SQL</div>
+                <div class="player-points" id="playerPoints">⭐ Puntos: 0</div>
+            </div>
+
+            <div id="levelContainer">
+                <!-- Los niveles se cargarán aquí dinámicamente -->
+            </div>
+        </div>
+
+        <!-- Pantalla Final -->
+        <div id="endScreen" class="end-screen">
+            <h1>🎉 ¡Felicitaciones!</h1>
+            <div class="trophy">🏆</div>
+            <p class="final-score" id="finalScore">Puntuación Final: 0 puntos</p>
+            
+            <div class="results-summary">
+                <h2>📚 Resumen de tu Aprendizaje</h2>
+                <p>¡Has completado todos los niveles! Esto es lo que has aprendido:</p>
+                
+                <div id="resultsGrid" style="margin-top: 20px;">
+                    <!-- Se llenará dinámicamente -->
+                </div>
+                
+                <h3>📊 Tu Tabla Final con Datos:</h3>
+                <div style="margin: 20px 0; overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                        <thead>
+                            <tr style="background: #5c6bc0; color: white;">
+                                <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">nombre</th>
+                                <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">edad</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="padding: 12px; border: 1px solid #ddd;">Ana</td>
+                                <td style="padding: 12px; border: 1px solid #ddd;">25</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <h3>Todos los comandos SQL que dominaste:</h3>
+                <div class="sql-commands" id="sqlCommands">
+                    <!-- Se llenará dinámicamente -->
+                </div>
+            </div>
+            
+            <div class="certificate">
+                <div class="certificate-logo">🎓</div>
+                <h2>Certificado de Logro</h2>
+                <p style="font-size: 1.2em; margin-bottom: 20px;">Este certificado se otorga a</p>
+                <h3 class="student-name">Explorador SQL</h3>
+                <p style="margin: 20px 0; line-height: 1.6;">Por completar exitosamente el curso<br><strong>"SQL Quest: Fundamentos de Bases de Datos"</strong><br>demostrando dominio en los conceptos básicos de SQL</p>
+                
+                <div class="skills-badges">
+                    <div class="skill-badge">✓ CREATE TABLE</div>
+                    <div class="skill-badge">✓ INSERT INTO</div>
+                    <div class="skill-badge">✓ SELECT</div>
+                    <div class="skill-badge">✓ WHERE</div>
+                    <div class="skill-badge">✓ COUNT(*)</div>
+                </div>
+                
+                <p style="margin: 20px 0;">Puntuación Final: <strong id="certificateScore" style="color: #5c6bc0; font-size: 1.5em;">1000 puntos</strong></p>
+                
+                <div class="certificate-footer">
+                    <div class="signature-block">
+                        <div class="signature-line"></div>
+                        <div>Director Académico</div>
+                    </div>
+                    <div class="signature-block">
+                        <div class="signature-line"></div>
+                        <div>Instructor SQL</div>
+                    </div>
+                </div>
+                
+                <div class="certificate-date">Fecha: <span id="currentDate"></span></div>
+                <div class="certificate-id">Certificado ID: SQLQ-2025-0001</div>
+            </div>
+            
+            <button class="start-button" onclick="location.reload()">🔄 Jugar de Nuevo</button>
+        </div>
+    </div>
+
+    <script>
+        let currentLevel = 0;
+        let playerPoints = 0;
+        let completedLevels = [];
+
+        const levels = [
+            {
+                title: "Tu Primera Tabla",
+                icon: "📝",
+                intro: "Una tabla es como una hoja de Excel. Tiene filas y columnas donde guardamos información.",
+                explanation: "CREATE significa 'crear' en inglés. TABLE significa 'tabla'. Juntos, CREATE TABLE significa 'crear tabla'.",
+                question: "¿Qué comando SQL usamos para crear una nueva tabla?",
+                code: "CREATE _____ personas (nombre VARCHAR, edad NUMBER);",
+                options: [
+                    { text: "TABLE", correct: true },
+                    { text: "MAKE", correct: false },
+                    { text: "BUILD", correct: false },
+                    { text: "NEW", correct: false }
+                ],
+                points: 100,
+                feedback: {
+                    correct: "¡Correcto! CREATE TABLE es el comando para crear una nueva tabla.",
+                    incorrect: "No es correcto. Usamos CREATE TABLE para crear tablas."
+                },
+                learned: "Crear tablas con CREATE TABLE",
+                meaning: "CREATE TABLE = CREAR TABLA (crea una nueva tabla en la base de datos)",
+                example: "CREATE TABLE personas (nombre VARCHAR, edad NUMBER);"
+            },
+            {
+                title: "Agregando Información",
+                icon: "➕",
+                intro: "Para agregar datos a una tabla, usamos el comando INSERT INTO.",
+                explanation: "INSERT significa 'insertar' y INTO significa 'dentro de'. INSERT INTO significa 'insertar dentro de' la tabla.",
+                question: "¿Qué palabra falta para agregar datos a una tabla?",
+                code: "INSERT _____ personas VALUES ('Ana', 25);",
+                options: [
+                    { text: "INTO", correct: true },
+                    { text: "TO", correct: false },
+                    { text: "IN", correct: false },
+                    { text: "ON", correct: false }
+                ],
+                points: 150,
+                feedback: {
+                    correct: "¡Excelente! INSERT INTO es el comando completo.",
+                    incorrect: "Casi. Usamos INSERT INTO para agregar datos."
+                },
+                learned: "Insertar datos con INSERT INTO",
+                meaning: "INSERT INTO = INSERTAR EN (agrega nuevos datos a una tabla)",
+                example: "INSERT INTO personas VALUES ('Ana', 25);"
+            },
+            {
+                title: "Viendo los Datos",
+                icon: "👀",
+                intro: "Para ver los datos de una tabla, usamos SELECT.",
+                explanation: "SELECT significa 'seleccionar'. El asterisco (*) significa 'todo'. FROM significa 'de'. Juntos dicen 'seleccionar todo de' la tabla.",
+                question: "¿Qué símbolo usamos para ver TODOS los datos de una tabla?",
+                code: "SELECT _____ FROM personas;",
+                options: [
+                    { text: "*", correct: true },
+                    { text: "#", correct: false },
+                    { text: "@", correct: false },
+                    { text: "&", correct: false }
+                ],
+                points: 200,
+                feedback: {
+                    correct: "¡Perfecto! SELECT * muestra todas las columnas.",
+                    incorrect: "No. Usamos el asterisco (*) para seleccionar todo."
+                },
+                learned: "Consultar todos los datos con SELECT *",
+                meaning: "SELECT * FROM = SELECCIONAR TODO DE (muestra todos los datos de una tabla)",
+                example: "SELECT * FROM personas;"
+            },
+            {
+                title: "Buscando Información",
+                icon: "🔍",
+                intro: "Para buscar datos específicos, usamos WHERE.",
+                explanation: "WHERE significa 'donde' en inglés. Lo usamos para filtrar datos con condiciones específicas.",
+                question: "¿Qué comando completa esta búsqueda de personas mayores de 18?",
+                code: "SELECT * FROM personas _____ edad > 18;",
+                options: [
+                    { text: "WHERE", correct: true },
+                    { text: "WHEN", correct: false },
+                    { text: "IF", correct: false },
+                    { text: "FIND", correct: false }
+                ],
+                points: 250,
+                feedback: {
+                    correct: "¡Genial! WHERE nos permite filtrar datos.",
+                    incorrect: "Usamos WHERE para establecer condiciones de búsqueda."
+                },
+                learned: "Filtrar datos con WHERE",
+                meaning: "WHERE = DONDE (filtra los datos según una condición)",
+                example: "SELECT * FROM personas WHERE edad > 18;"
+            },
+            {
+                title: "Contando Registros",
+                icon: "📊",
+                intro: "Para contar cuántos registros hay, usamos COUNT.",
+                explanation: "COUNT significa 'contar' en inglés. COUNT(*) cuenta todas las filas en una tabla.",
+                question: "¿Qué función SQL cuenta el número de registros?",
+                code: "SELECT _____(*)  FROM personas;",
+                options: [
+                    { text: "COUNT", correct: true },
+                    { text: "SUM", correct: false },
+                    { text: "TOTAL", correct: false },
+                    { text: "NUMBER", correct: false }
+                ],
+                points: 300,
+                feedback: {
+                    correct: "¡Excelente! COUNT cuenta el número de registros.",
+                    incorrect: "COUNT es la función para contar registros."
+                },
+                learned: "Contar registros con COUNT",
+                meaning: "COUNT(*) = CONTAR TODO (cuenta el número total de registros)",
+                example: "SELECT COUNT(*) FROM personas;"
+            }
+        ];
+
+        function showTutorial() {
+            document.getElementById('welcomeScreen').style.display = 'none';
+            document.getElementById('tutorialScreen').style.display = 'block';
+        }
+
+        function startGame() {
+            document.getElementById('welcomeScreen').style.display = 'none';
+            document.getElementById('tutorialScreen').style.display = 'none';
+            document.getElementById('gameScreen').style.display = 'block';
+            loadLevel();
+        }
+
+        function loadLevel() {
+            const level = levels[currentLevel];
+            const levelContainer = document.getElementById('levelContainer');
+            
+            levelContainer.innerHTML = `
+                <div class="level-card">
+                    <div class="level-header">
+                        <span class="level-icon">${level.icon}</span>
+                        <span class="level-title">Nivel ${currentLevel + 1}: ${level.title}</span>
+                    </div>
+                    
+                    <p>${level.intro}</p>
+                    
+                    <div class="explanation-box">
+                        <strong>💡 Explicación:</strong> ${level.explanation}
+                    </div>
+                    
+                    <div class="command-meaning">
+                        <strong>📚 Significado:</strong> ${level.meaning}
+                    </div>
+                    
+                    <div class="code-example">${level.code}</div>
+                    <p><strong>${level.question}</strong></p>
+                    
+                    <div class="options" id="options">
+                        ${level.options.map((option, index) => `
+                            <button class="option-button" onclick="checkAnswer(${index})">${option.text}</button>
+                        `).join('')}
+                    </div>
+                    
+                    <div class="feedback" id="feedback"></div>
+                    <button class="next-button" id="nextButton" onclick="nextLevel()">Siguiente Nivel ➡️</button>
+                </div>
+            `;
+        }
+
+        function checkAnswer(index) {
+            const level = levels[currentLevel];
+            const options = document.querySelectorAll('.option-button');
+            const feedback = document.getElementById('feedback');
+            const nextButton = document.getElementById('nextButton');
+            
+            options.forEach(option => option.disabled = true);
+            
+            if (level.options[index].correct) {
+                options[index].classList.add('correct');
+                feedback.className = 'feedback correct';
+                feedback.textContent = level.feedback.correct;
+                playerPoints += level.points;
+                document.getElementById('playerPoints').textContent = `⭐ Puntos: ${playerPoints}`;
+                nextButton.style.display = 'inline-block';
+                
+                // Guardar nivel completado
+                completedLevels.push({
+                    title: level.title,
+                    icon: level.icon,
+                    learned: level.learned,
+                    meaning: level.meaning,
+                    example: level.example,
+                    points: level.points
+                });
+            } else {
+                options[index].classList.add('incorrect');
+                feedback.className = 'feedback incorrect';
+                feedback.textContent = level.feedback.incorrect;
+                
+                setTimeout(() => {
+                    options.forEach(option => {
+                        option.disabled = false;
+                        option.classList.remove('incorrect');
+                    });
+                    feedback.style.display = 'none';
+                }, 2000);
+            }
+            
+            feedback.style.display = 'block';
+        }
+
+        function nextLevel() {
+            currentLevel++;
+            
+            if (currentLevel < levels.length) {
+                loadLevel();
+            } else {
+                endGame();
+            }
+        }
+
+        function endGame() {
+            document.getElementById('gameScreen').style.display = 'none';
+            document.getElementById('endScreen').style.display = 'block';
+            document.getElementById('finalScore').textContent = `Puntuación Final: ${playerPoints} puntos`;
+            
+            // Actualizar puntuación en el certificado
+            document.getElementById('certificateScore').textContent = `${playerPoints} puntos`;
+            
+            // Establecer fecha actual
+            const today = new Date();
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('currentDate').textContent = today.toLocaleDateString('es-ES', options);
+            
+            // Llenar el resumen de resultados
+            const resultsGrid = document.getElementById('resultsGrid');
+            resultsGrid.innerHTML = completedLevels.map(level => `
+                <div class="result-item">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span style="font-size: 1.5em;">${level.icon}</span>
+                        <strong>${level.title}</strong>
+                    </div>
+                    <div style="margin-top: 10px;">
+                        <strong>Aprendiste:</strong> ${level.learned}
+                    </div>
+                    <div style="margin-top: 5px; background: #fff3e0; padding: 8px; border-radius: 5px;">
+                        <strong>Significado:</strong> ${level.meaning}
+                    </div>
+                    <div style="margin-top: 5px; color: #4caf50;">
+                        <strong>+${level.points} puntos</strong>
+                    </div>
+                </div>
+            `).join('');
+            
+            // Llenar los comandos SQL con significados
+            const sqlCommands = document.getElementById('sqlCommands');
+            sqlCommands.innerHTML = `-- Comandos SQL que ahora dominas con sus significados:
+
+-- 1. Crear una tabla
+CREATE TABLE personas (nombre VARCHAR, edad NUMBER);
+-- Significado: CREAR TABLA personas (con columnas nombre y edad)
+
+-- 2. Insertar datos
+INSERT INTO personas VALUES ('Ana', 25);
+-- Significado: INSERTAR EN personas VALORES ('Ana', 25)
+
+-- 3. Ver todos los datos
+SELECT * FROM personas;
+-- Significado: SELECCIONAR TODO DE personas
+-- Resultado: 
+-- | nombre | edad |
+-- |--------|------|
+-- | Ana    | 25   |
+
+-- 4. Buscar datos específicos
+SELECT * FROM personas WHERE edad > 18;
+-- Significado: SELECCIONAR TODO DE personas DONDE edad sea mayor que 18
+-- Resultado: 
+-- | nombre | edad |
+-- |--------|------|
+-- | Ana    | 25   |
+
+-- 5. Contar registros
+SELECT COUNT(*) FROM personas;
+-- Significado: SELECCIONAR CONTAR(TODO) DE personas
+-- Resultado: 1`;
+        }
+    </script>
+</body>
+</html>
